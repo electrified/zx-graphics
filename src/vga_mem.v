@@ -6,12 +6,26 @@ module vga_mem(
     output VS,
     output reg [3:0] RED,
     output reg [3:0] GREEN,
-    output reg [3:0] BLUE
+    output reg [3:0] BLUE,
+    input [15:0] A,
+    input [7:0] D,
+    input RD,
+    input M1,
+    input z80_clk,
+    input MRQ,
+    input IORQ,
+    input RST,
+    input INT,
+    input WR,
+    output LED1,
+    output LED2
     );
+// assign LED1 = 1;
+assign LED2 = 0;
 
 wire [9:0] x, y;
 
-reg [7:0] mem[8192:0];//6912
+reg [7:0] mem[6912:0];//6912
 /*
 640 x 480
 
@@ -76,4 +90,50 @@ always @(posedge CLK)
             BLUE <= 0;
         end
     end
+
+reg wr_0;
+reg wr_1;
+reg mrq_0;
+reg mrq_1;
+reg z80_clk_0;
+reg z80_clk_1;
+reg z80_clk_2;
+reg [15:0] A_0;
+reg [15:0] A_1;
+reg [15:0] D_0;
+reg [15:0] D_1;
+
+reg [31:0] led_countdown = 0;
+
+
+//   assign LED1 = led_track;
+
+always @(posedge CLK)
+begin
+    z80_clk_0 <= z80_clk;
+    z80_clk_1 <= z80_clk_0;
+    z80_clk_2 <= z80_clk_1;
+
+    wr_0 <= WR;
+    wr_1 <= wr_0;
+
+    mrq_0 <= MRQ;
+    mrq_1 <= mrq_0;
+
+    A_0 <= A;
+    A_1 <= A_0;
+
+    D_0 <= D;
+    D_1 <= D_0;
+
+    if(z80_clk_2 == 0 && z80_clk_1 == 1)// && mrq_1 == 0 && wr_1 == 0
+    begin
+        LED1 <= ~LED1;
+        if (A_1 >= 'h4000 && A_1 <= 'h5AFF)
+        begin
+            mem[A_1 - 'h4000] <= D_1;
+        end
+    end
+
+end
 endmodule
