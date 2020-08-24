@@ -135,10 +135,10 @@ begin
     if(z80_clk_2 == 0 && z80_clk_1 == 1&& mrq_2 == 0 && wr_1 == 0)//  
     begin
 
-         if (A_1 != A_2)//'h4000 && A_1 <= 'h5AFF
+        if (A_2 >= 'h4000 && A_2 <= 'h5AFF)
         begin
             LED1 <= ~LED1;
-            // mem[A_1 - 'h4000] <= D_1;
+            mem[A_2 - 'h4000] <= D_1;
         end
     end
 
