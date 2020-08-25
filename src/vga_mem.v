@@ -93,6 +93,7 @@ always @(posedge CLK)
 
 reg wr_0;
 reg wr_1;
+reg wr_2;
 reg mrq_0;
 reg mrq_1;
 reg mrq_2;
@@ -107,11 +108,6 @@ reg [15:0] D_1;
 
 reg [31:0] led_countdown = 0;
 
-
-//   assign LED1 = led_track;
-
-
-
 always @(posedge CLK)
 begin
     z80_clk_0 <= z80_clk;
@@ -120,6 +116,7 @@ begin
 
     wr_0 <= WR;
     wr_1 <= wr_0;
+    wr_2 <= wr_1;
 
     mrq_0 <= MRQ;
     mrq_1 <= mrq_0;
@@ -132,7 +129,7 @@ begin
     D_0 <= D;
     D_1 <= D_0;
 
-    if(z80_clk_2 == 0 && z80_clk_1 == 1&& mrq_2 == 0 && wr_1 == 0)//  
+    if(mrq_2 == 0 && wr_2 == 1 && wr_1 == 0)
     begin
 
         if (A_2 >= 'h4000 && A_2 <= 'h5AFF)
