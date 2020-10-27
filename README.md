@@ -23,3 +23,5 @@ use regulator power if all wires from fpga not connected
 30 POKE A, 1
 35 A = A + 1
 40 WEND
+
+https://1bitsquared.de/products/pmod-digital-video-interface

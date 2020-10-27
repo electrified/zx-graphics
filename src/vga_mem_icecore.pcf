@@ -1,0 +1,96 @@
+# ##############################################################################
+# iCEcube PCF
+# Version:            2017.08.27940
+# File Generated:     Dec 27 2017 13:52:16
+# Family & Device:    iCE40HX4K
+# Package:            TQ144
+# ##############################################################################
+
+
+# set_io LED1 71 #P52
+# set_io LED2 67 #P53
+# #set_io LED3 #P54
+# #set_io LED4 #P55
+
+###IOSet List 11
+set_io CLK 60
+
+# #pmod 2
+# set_io A[14] 87 # rd1
+# set_io A[12] 90 # rd3
+# set_io A[10] 93 # rd5
+# set_io A[8] 95 # rd7
+
+# #pmod 1
+# set_io A[15] 85 # rd0
+# set_io A[13] 88 # rd2
+# set_io A[11] 91 # rd4
+# set_io A[9] 94 # rd6
+
+# #pmod 4
+# set_io A[6] 96 #P15
+# set_io A[4] 98 #P14
+# set_io A[2] 31 #P13
+# set_io A[0] 104 #P12
+
+# #pmod 3
+# set_io A[7] 97 #P11
+# set_io A[5] 99 #P10
+# set_io A[3] 102 #P9
+# set_io A[1] 105 #P8
+
+# #pmod 6
+# set_io M1 106 #P23
+# set_io RD 110 #P22
+# set_io z80_clk 113 #P21
+# set_io MRQ 144 #P20
+
+# #pmod 5
+# set_io IORQ 107 #P19
+# set_io RST 112 #P18
+# set_io INT 114 #P17
+# set_io WR 143 #P16
+
+# #pmod 8
+# set_io D[0] 3 #P31
+# set_io D[2] 4 #P30
+# set_io D[4] 102
+# set_io D[6] 105
+
+# #pmod 7
+# set_io D[1] 49
+# set_io D[3] 101
+# set_io D[5] 9 #P25
+# set_io D[7] 10 #P24
+
+
+# VGA Output - Matches Digilent PmodVGA plugged into PMOD7/8/9/10
+
+# Bottom row
+set_io BLUE[0]   136   
+set_io BLUE[1]   137   
+set_io BLUE[2]   134   
+set_io BLUE[3]   135   
+set_io HS        1   
+set_io VS        2   
+
+
+# top row
+set_io RED[0]    141
+set_io RED[1]    142
+set_io RED[2]    138
+set_io RED[3]    139
+
+set_io GREEN[0]  143
+set_io GREEN[1]  144
+set_io GREEN[2]   3
+set_io GREEN[3]   4
+
+
+
+
+
+
+
+
+

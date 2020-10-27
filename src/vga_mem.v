@@ -46,21 +46,21 @@ initial begin
   $readmemh("../amazonia.hex", mem);
 end
 
-  wire [9:0] prescaler;
+//   wire [9:0] prescaler;
 
-  always @(posedge CLK)
-    begin
-    prescaler = prescaler + 1;
+//   always @(posedge CLK)
+//     begin
+//     prescaler = prescaler + 1;
 
-    if (prescaler == 3)
-    begin
-      prescaler = 0;
-    end
-  end
+//     if (prescaler == 3)
+//     begin
+//       prescaler = 0;
+//     end
+//   end
 
 
   hvsync_generator hvsync_gen(
-    .clk(prescaler),
+    .clk(CLK),
     .reset(0),
     .hsync(HS),
     .vsync(VS),
