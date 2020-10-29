@@ -11,18 +11,19 @@ module vga_mem(
     input [7:0] D,
     input RD,
     input M1,
-    input z80_clk,
-    input MRQ,
+    input Z80_CLK,
+    input MREQ,
     input IORQ,
-    input RST,
+    input RESET,
     input INT,
     input WR,
-    output LED1,
-    output LED2
+    output OUTPUT_ENABLE,
+    // output LED1,
+    // output LED2
     );
 // assign LED1 = 1;
-assign LED2 = 0;
-
+// assign LED2 = 0;
+assign OUTPUT_ENABLE = 0;
 wire [9:0] x, y;
 
 reg [7:0] mem[6912:0];//6912
@@ -110,7 +111,7 @@ reg [31:0] led_countdown = 0;
 
 always @(posedge CLK)
 begin
-    z80_clk_0 <= z80_clk;
+    z80_clk_0 <= Z80_CLK;
     z80_clk_1 <= z80_clk_0;
     z80_clk_2 <= z80_clk_1;
 
@@ -118,7 +119,7 @@ begin
     wr_1 <= wr_0;
     wr_2 <= wr_1;
 
-    mrq_0 <= MRQ;
+    mrq_0 <= MREQ;
     mrq_1 <= mrq_0;
     mrq_2 <= mrq_1;
 
@@ -134,7 +135,7 @@ begin
 
         if (A_2 >= 'h4000 && A_2 <= 'h5AFF)
         begin
-            LED1 <= ~LED1;
+            // LED1 <= ~LED1;
             mem[A_2 - 'h4000] <= D_1;
         end
     end
