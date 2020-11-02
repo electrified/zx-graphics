@@ -24,4 +24,14 @@ use regulator power if all wires from fpga not connected
 35 A = A + 1
 40 WEND
 
+
+10 LET A = &H0
+20 WHILE A < &H5AFF
+30 OUT &H40, A AND &HFF
+40 OUT &H41, A / 256
+50 OUT &H42, &HFF
+60 A = A + 1
+70 WEND
+
+
 https://1bitsquared.de/products/pmod-digital-video-interface

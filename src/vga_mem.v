@@ -7,22 +7,29 @@ module vga_mem(
     output reg [3:0] RED,
     output reg [3:0] GREEN,
     output reg [3:0] BLUE,
-    input [15:0] A,
-    input [7:0] D,
-    input RD,
+    input [7:0] A,
     input M1,
-    input Z80_CLK,
-    input MREQ,
-    input IORQ,
+    input RFSH,
     input RESET,
+    input Z80_CLK,
     input INT,
-    input WR,
+    input BUSACK,
     output OUTPUT_ENABLE,
-    // output LED1,
-    // output LED2
+    input MREQ,
+    input HALT,
+    input WR,
+    input BUSREQ,
+    input RD,
+    input WAIT,
+    input IORQ,
+    input NMI,
+    input [7:0] D,
     );
-// assign LED1 = 1;
-// assign LED2 = 0;
+
+parameter ADDR_IO_ADDR_LOW = 'h40;
+parameter ADDR_IO_ADDR_HIGH = ADDR_IO_ADDR_LOW + 1;
+parameter VALUE_IO_ADDR = ADDR_IO_ADDR_HIGH + 1;
+
 assign OUTPUT_ENABLE = 0;
 wire [9:0] x, y;
 
@@ -46,19 +53,6 @@ reg [9:0] scaled_y;
 initial begin
   $readmemh("../amazonia.hex", mem);
 end
-
-//   wire [9:0] prescaler;
-
-//   always @(posedge CLK)
-//     begin
-//     prescaler = prescaler + 1;
-
-//     if (prescaler == 3)
-//     begin
-//       prescaler = 0;
-//     end
-//   end
-
 
   hvsync_generator hvsync_gen(
     .clk(CLK),
@@ -95,9 +89,9 @@ always @(posedge CLK)
 reg wr_0;
 reg wr_1;
 reg wr_2;
-reg mrq_0;
-reg mrq_1;
-reg mrq_2;
+reg iorq_0;
+reg iorq_1;
+reg iorq_2;
 reg z80_clk_0;
 reg z80_clk_1;
 reg z80_clk_2;
@@ -106,6 +100,9 @@ reg [15:0] A_1;
 reg [15:0] A_2;
 reg [15:0] D_0;
 reg [15:0] D_1;
+
+reg [15:0] vram_addr;
+reg [15:0] vram_value;
 
 reg [31:0] led_countdown = 0;
 
@@ -119,9 +116,9 @@ begin
     wr_1 <= wr_0;
     wr_2 <= wr_1;
 
-    mrq_0 <= MREQ;
-    mrq_1 <= mrq_0;
-    mrq_2 <= mrq_1;
+    iorq_0 <= IORQ;
+    iorq_1 <= iorq_0;
+    iorq_2 <= iorq_1;
 
     A_0 <= A;
     A_1 <= A_0;
@@ -130,13 +127,23 @@ begin
     D_0 <= D;
     D_1 <= D_0;
 
-    if(mrq_2 == 0 && wr_2 == 1 && wr_1 == 0)
+    if(iorq_2 == 0 && wr_2 == 0 && wr_1 == 1)
     begin
 
-        if (A_2 >= 'h4000 && A_2 <= 'h5AFF)
+        if (A_2 == ADDR_IO_ADDR_HIGH)
         begin
-            // LED1 <= ~LED1;
-            mem[A_2 - 'h4000] <= D_1;
+            vram_addr[15:8] <= D_1;
+        end
+
+        if (A_2 == ADDR_IO_ADDR_LOW)
+        begin
+            vram_addr[7:0] <= D_1;
+        end
+
+
+        if (A_2 == VALUE_IO_ADDR)
+        begin
+            mem[vram_addr] <= D_1;
         end
     end
 
