@@ -59,3 +59,10 @@ https://1bitsquared.de/products/pmod-digital-video-interface
 120 next a
 130 next ov
 
+Todo
+
+* Sensible memory layout
+* Pick resollution and colour depth. VGA?
+* Reduce IO requirements, auto advance
+* Sprites
+* Border

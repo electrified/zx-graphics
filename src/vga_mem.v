@@ -33,7 +33,7 @@ parameter VALUE_IO_ADDR = ADDR_IO_ADDR_HIGH + 1;
 assign OUTPUT_ENABLE = 0;
 wire [9:0] x, y;
 
-reg [7:0] mem[6912:0];//6912
+reg [7:0] mem[6912:0];
 /*
 640 x 480
 
@@ -139,7 +139,6 @@ begin
         begin
             vram_addr[7:0] <= D_1;
         end
-
 
         if (A_2 == VALUE_IO_ADDR)
         begin
