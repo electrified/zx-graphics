@@ -1,6 +1,9 @@
 root = true
 
-[*]
+[Makefile]
+indent_style = tab
+
+[*.v]
 indent_style = space
 indent_size = 4
 tab_width = 4

@@ -11,3 +11,6 @@ upload:
 .PHONY: clean
 clean:
 	$(RM) -f chip.json chip.txt chip.asc chip.bin
+
+sim:
+	iverilog vga_mem.v hvsync_generator.v pll.v sdram.v vga_mem_tb.v `yosys-config --datdir/ice40/cells_sim.v`

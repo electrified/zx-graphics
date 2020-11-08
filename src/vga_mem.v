@@ -55,13 +55,9 @@ wire display_on;
 reg [9:0] scaled_x;
 reg [9:0] scaled_y;
 
-// initial begin
-//   $readmemh("../amazonia.hex", mem);
-// end
-
   hvsync_generator hvsync_gen(
     .clk(clk25),
-    .reset(0),
+    .reset(1'b0),
     .hsync(HS),
     .vsync(VS),
     .display_on(display_on),
@@ -175,7 +171,7 @@ begin
             // vram_addr <= 0
             vram_value <= D_1;
             write_to_sdram <= 1;
-            load_write_data <= 'b1010101010101010; //vram_value;
+            load_write_data <= 'b1010101010101010;
             blanking_all_ram <= 1;
         end
 
@@ -216,7 +212,7 @@ end
 
    reg [5:0] clkdiv;
    reg sync;
-   reg sdram_access;
+   reg sdram_access = 1;
    reg clk32;
 
    always @(posedge clk64) begin
@@ -249,7 +245,7 @@ end
    assign sd_cke = 1;
    assign sd_clk = clk64;
 
-    assign sdram_access = 1;
+    // assign sdram_access = 1;
 
     reg write_to_sdram;
     // assign write_to_sdram = 0;
@@ -259,7 +255,6 @@ end
     wire [15:0] load_write_data;
     assign load_write_data = 'b1010101010101010;
 
-    reg  sdram_access;
    wire [15:0] sdram_address = write_to_sdram ? vram_addr[15:0] : display_read_addr[15:0];
    wire        sdram_wren = write_to_sdram;
    wire [15:0] sdram_write_data = load_write_data;
