@@ -1,5 +1,5 @@
-chip.bin: vga_mem.v hvsync_generator.v vga_mem_icecore.pcf
-	yosys -p "synth_ice40 -json chip.json" vga_mem.v hvsync_generator.v
+chip.bin: vga_mem.v hvsync_generator.v sdram.v pll.v vga_mem_icecore.pcf
+	yosys -p "synth_ice40 -json chip.json" vga_mem.v hvsync_generator.v sdram.v pll.v
 	nextpnr-ice40 --hx8k --package tq144:4k --pcf vga_mem_icecore.pcf --json chip.json --asc chip.asc
 	icepack chip.asc chip.bin
 

@@ -13,7 +13,7 @@ set_io LED2 67 #P53
 #set_io LED4 #P55
 
 ###IOSet List 11
-set_io CLK 129
+set_io clk25 129
 
 #pmod 2
 set_io A[14] 87 # rd1
