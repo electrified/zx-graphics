@@ -224,8 +224,8 @@ end
 
    // Use SB_IO for tristate sd_data
    wire [15:0] sd_data_in;
-   reg  [15:0] sd_data_out;
-   reg         sd_data_dir;
+   wire  [15:0] sd_data_out;
+   wire         sd_data_dir;
 
 `ifdef use_sb_io
    SB_IO #(
@@ -252,8 +252,7 @@ end
 
     reg  [15:0] display_read_addr;
 
-    wire [15:0] load_write_data;
-    assign load_write_data = 'b1010101010101010;
+    reg [15:0] load_write_data;
 
    wire [15:0] sdram_address = write_to_sdram ? vram_addr[15:0] : display_read_addr[15:0];
    wire        sdram_wren = write_to_sdram;

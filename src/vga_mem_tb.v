@@ -81,10 +81,10 @@ initial begin
         #(PERIOD/2) clk25 = ~clk25;
 end
 
-initial begin
-        rst=1'b0;
-         #(PERIOD*2) rst=~rst;
-         #PERIOD rst=~rst;
-         end
+// initial begin
+//         rst=1'b0;
+//          #(PERIOD*2) rst=~rst;
+//          #PERIOD rst=~rst;
+//          end
 // `include "user.tb_vga_mem.v"
 endmodule
