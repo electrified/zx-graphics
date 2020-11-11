@@ -16,6 +16,10 @@ module pll(
 	output locked
 	);
 
+`ifdef sim
+    assign clock_out = clock_in;
+    assign locked = 1'b1;
+`else
 SB_PLL40_CORE #(
 		.FEEDBACK_PATH("SIMPLE"),
 		.DIVR(4'b0000),		// DIVR =  0
@@ -29,5 +33,5 @@ SB_PLL40_CORE #(
 		.REFERENCECLK(clock_in),
 		.PLLOUTCORE(clock_out)
 		);
-
+`endif
 endmodule

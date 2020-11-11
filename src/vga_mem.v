@@ -43,6 +43,14 @@ parameter VALUE_IO_ADDR = ADDR_IO_ADDR_HIGH + 1;
 assign OUTPUT_ENABLE = 0;
 wire [9:0] x, y;
 
+reg [3:0] rst_cnt = 0;
+wire rst_n = !rst_cnt[3];
+
+always @(posedge clk25)
+if( rst_n )
+    rst_cnt <= rst_cnt + 1;
+
+
 /*
 640 x 480
 
@@ -57,7 +65,7 @@ reg [9:0] scaled_y;
 
   hvsync_generator hvsync_gen(
     .clk(clk25),
-    .reset(1'b0),
+    .reset(rst_n),
     .hsync(HS),
     .vsync(VS),
     .display_on(display_on),
@@ -123,8 +131,8 @@ reg [15:0] A_2;
 reg [15:0] D_0;
 reg [15:0] D_1;
 
-reg [15:0] vram_addr;
-reg [15:0] vram_value;
+reg [15:0] vram_addr = 0;
+reg [15:0] vram_value = 0;
 reg  [1:0] sdram_written = 0;
 reg blanking_all_ram;
 
@@ -169,29 +177,29 @@ begin
         begin;
             sdram_written <= 1;
             // vram_addr <= 0
-            vram_value <= D_1;
+            // vram_value <= D_1;
             write_to_sdram <= 1;
             load_write_data <= 'b1010101010101010;
             blanking_all_ram <= 1;
         end
+    end
 
-        if (blanking_all_ram)
+    if (blanking_all_ram)
+    begin
+        if (sync)
         begin
-            if (sync)
-            begin
-                sdram_written <= sdram_written + 1;
-            end
+            sdram_written <= sdram_written + 1;
+        end
 
-            if(sync && sdram_written == 3)
-            begin
-                sdram_written <= 0;
-                vram_addr <= vram_addr + 1;
+        if(sync && sdram_written == 3)
+        begin
+            sdram_written <= 0;
+            vram_addr <= vram_addr + 1;
 
-                if(vram_addr == 'h7FF)
-                begin
-                    blanking_all_ram <= 0;
-                    write_to_sdram <= 0;
-                end
+            if(vram_addr == 'h7FF)
+            begin
+                blanking_all_ram <= 0;
+                write_to_sdram <= 0;
             end
         end
     end
@@ -210,7 +218,7 @@ end
    // Clock Enable Generation
    // ===============================================================
 
-   reg [5:0] clkdiv;
+   reg [5:0] clkdiv = 6'b000000;
    reg sync;
    reg sdram_access = 1;
    reg clk32;
@@ -227,7 +235,7 @@ end
    wire  [15:0] sd_data_out;
    wire         sd_data_dir;
 
-`ifdef use_sb_io
+// `ifdef use_sb_io
    SB_IO #(
      .PIN_TYPE(6'b 1010_01),
      .PULLUP(1'b 0)
@@ -237,17 +245,17 @@ end
      .D_OUT_0(sd_data_out),
      .D_IN_0(sd_data_in)
    );
-`else 
-   assign sd_data = sd_data_dir ? sd_data_out : 16'hzzzz;
-   assign sd_data_in = sd_data; 
-`endif
+// `else 
+//    assign sd_data = sd_data_dir ? sd_data_out : 16'hzzzz;
+//    assign sd_data_in = sd_data; 
+// `endif
 
    assign sd_cke = 1;
    assign sd_clk = clk64;
 
     // assign sdram_access = 1;
 
-    reg write_to_sdram;
+    reg write_to_sdram = 0;
     // assign write_to_sdram = 0;
 
     reg  [15:0] display_read_addr;

@@ -1,4 +1,5 @@
 `timescale 1ns/10ps //Adjust to suit
+`define sim
 
 module tb_vga_mem;
 
@@ -81,10 +82,22 @@ initial begin
         #(PERIOD/2) clk25 = ~clk25;
 end
 
-// initial begin
-//         rst=1'b0;
-//          #(PERIOD*2) rst=~rst;
-//          #PERIOD rst=~rst;
-//          end
+initial begin
+    WR = 1;
+    IORQ = 1;
+    A = 8'h0;
+    #40
+
+    A = 8'h42;
+    IORQ = 0;
+    WR = 0;
+    #40;
+    WR = 1;
+    #40;
+    IORQ = 1;
+    // #PERIOD;
+    A = 8'h0;
+    // #PERIOD;
+end
 // `include "user.tb_vga_mem.v"
 endmodule
