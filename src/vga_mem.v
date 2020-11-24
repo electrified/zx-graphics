@@ -76,6 +76,11 @@ reg [9:0] scaled_y;
 
 always @(posedge clk25)
     begin
+        if (rst_n)
+        begin
+            sdram_access <= 1;
+        end
+
         scaled_x <= (x >> 1);
         scaled_y <= (y >> 1);
         
@@ -225,7 +230,7 @@ end
 
    always @(posedge clk64) begin
      clkdiv <= clkdiv + 1;
-     sdram_access <= (clkdiv >= 8 && clkdiv < 16);
+    //  sdram_access <= (clkdiv >= 8 && clkdiv < 16);
      sync <= (clkdiv[2:0] == 0);
      clk32 <= clkdiv[0];
    end
@@ -253,8 +258,6 @@ end
    assign sd_cke = 1;
    assign sd_clk = clk64;
 
-    // assign sdram_access = 1;
-
     reg write_to_sdram = 0;
     // assign write_to_sdram = 0;
 
@@ -269,7 +272,7 @@ end
    wire  [1:0] sdram_mask = 2'b00; //write_to_sdram ? (2'b01 << vram_addr[0]) : display_read_addr[10:0];
 
    // SDRAM
-   sdram ram(
+   sdram sdram_inst(
     .sd_data_in(sd_data_in),
     .sd_data_out(sd_data_out),
     .sd_data_dir(sd_data_dir),

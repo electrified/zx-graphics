@@ -1,7 +1,7 @@
 `timescale 1ns/10ps //Adjust to suit
 `define sim
 
-module tb_vga_mem;
+module vga_mem_tb;
 
 reg               clk25            ;
 wire              HS               ;
@@ -75,7 +75,7 @@ parameter PERIOD = 10; //adjust for your timescale
 
 initial begin
     $dumpfile("tb_output.vcd");
-    $dumpvars(2, tb_vga_mem);
+    $dumpvars(2, vga_mem_tb);
     clk25 = 1'b0;
     #(PERIOD/2);
     forever

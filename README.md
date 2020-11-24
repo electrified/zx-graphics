@@ -64,7 +64,9 @@ https://1bitsquared.de/products/pmod-digital-video-interface
 
 Todo
 * Sensible memory layout
-* Pick resollution and colour depth. VGA?
+* Pick resolution and colour depth. VGA?
 * Reduce IO requirements, auto advance
 * Sprites
 * Border
+* Get the SDRAM working
+* Have a solid test suite
