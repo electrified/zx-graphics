@@ -50,7 +50,6 @@ always @(posedge clk25)
 if( rst_n )
     rst_cnt <= rst_cnt + 1;
 
-
 /*
 640 x 480
 
@@ -79,6 +78,14 @@ always @(posedge clk25)
         if (rst_n)
         begin
             sdram_access <= 1;
+
+            
+            sdram_written <= 1;
+            // vram_addr <= 0
+            // vram_value <= D_1;
+            write_to_sdram <= 1;
+            load_write_data <= 'b1010101010101010;
+            blanking_all_ram <= 1;
         end
 
         scaled_x <= (x >> 1);
@@ -259,7 +266,6 @@ end
    assign sd_clk = clk64;
 
     reg write_to_sdram = 0;
-    // assign write_to_sdram = 0;
 
     reg  [15:0] display_read_addr;
 

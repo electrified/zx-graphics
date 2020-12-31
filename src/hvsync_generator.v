@@ -9,7 +9,6 @@ To use:
 - Wire the hsync and vsync signals to top level outputs
 - Add a 3-bit (or more) "rgb" output to the top level
 */
-
 module hvsync_generator(clk, reset, hsync, vsync, display_on, hpos, vpos);
 
   input clk;
