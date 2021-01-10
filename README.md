@@ -70,3 +70,13 @@ Todo
 * Border
 * Get the SDRAM working
 * Have a solid test suite
+
+
+Test suite goals
+Show that the memory is correctly initialised as per the data sheet
+blank memory
+read it back
+write distinctive pattern
+read it back 
+interleave reads and writes
+how to do assertions in a test bench?

@@ -12,13 +12,28 @@
 
 module pll(
 	input  clock_in,
-	output clock_out,
+	output reg clock_out,
 	output locked
 	);
 
 `ifdef sim
-    assign clock_out = clock_in;
-    assign locked = 1'b1;
+    parameter PERIOD = 16; //15.6ns == 64mhz
+
+    reg [4:0] lock_count;
+
+    initial begin
+        clock_out = 0;
+        lock_count = 0;
+    end
+
+    always #(PERIOD/2) begin
+        clock_out=~clock_out;
+
+        if(lock_count != 5'h1f)
+		    lock_count <= lock_count + 5'd1;
+    end
+
+    assign locked = &lock_count;
 `else
 SB_PLL40_CORE #(
 		.FEEDBACK_PATH("SIMPLE"),

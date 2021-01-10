@@ -1,46 +1,9 @@
-set_io A[15] 48 #P0
-set_io A[14] 47 #P1
-set_io A[13] 45 #P2
-set_io A[12] 44 #P3
-set_io A[11] 43 #P4
-set_io A[10] 42 #P5
-set_io A[9] 41 #P6
-set_io A[8] 39 #P7
-set_io A[7] 38 #P8
-set_io A[6] 37 #P9
-set_io A[5] 34 #P10
-set_io A[4] 33 #P11
-set_io A[3] 32 #P12
-set_io A[2] 31 #P13
-set_io A[1] 29 #P14
-set_io A[0] 28 #P15
+set_io -pullup yes button 49 # (active low)
 
-set_io M1 25 #P17
-set_io RFSH 24 #P18
-set_io RESET 23 #P19
-set_io Z80_CLK 22 #P20
-set_io INT 21 #P21
-set_io BUSACK 20 #P22
+set_io leds[0] 52
+set_io leds[1] 55
+set_io leds[2] 56
 
-set_io OUTPUT_ENABLE 19 #P23
-
-set_io MREQ 18 #P24
-set_io HALT 17 #P25
-set_io WR 16 #P26
-set_io BUSREQ 15 #P27
-set_io RD 12 #P28
-set_io WAIT 11 #P29
-set_io IORQ 10 #P30
-set_io NMI 9 #P31
-
-set_io D[0] 52 #P48 GREEN LED
-set_io D[1] 49 #P49 BLUE LED
-set_io D[2] 99 #P50 SD2
-set_io D[3] 101 #P51 SD3
-set_io D[4] 102 #P52
-set_io D[5] 104 #P53 SDCLK
-set_io D[6] 105 #P54 SD0
-set_io D[7] 106 #P55 SD1
 
 ###IOSet List 11
 set_io clk25 60

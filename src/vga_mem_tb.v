@@ -1,4 +1,4 @@
-`timescale 1ns/10ps //Adjust to suit
+`timescale 1ns/10ps
 `define sim
 
 module vga_mem_tb;
@@ -9,23 +9,6 @@ wire              VS               ;
 wire    [3:0]     RED              ;
 wire    [3:0]     GREEN            ;
 wire    [3:0]     BLUE             ;
-reg     [7:0]     A                ;
-reg               M1               ;
-reg               RFSH             ;
-reg               RESET            ;
-reg               Z80_CLK          ;
-reg               INT              ;
-reg               BUSACK           ;
-wire              OUTPUT_ENABLE    ;
-reg               MREQ             ;
-reg               HALT             ;
-reg               WR               ;
-reg               BUSREQ           ;
-reg               RD               ;
-reg               WAIT             ;
-reg               IORQ             ;
-reg               NMI              ;
-reg     [7:0]     D                ;
 wire    [15:0]    sd_data          ;
 wire    [10:0]    sd_addr          ;
 wire    [1:0]     sd_dqm           ;
@@ -43,23 +26,6 @@ vga_mem uut (
     .RED              (    RED              ),
     .GREEN            (    GREEN            ),
     .BLUE             (    BLUE             ),
-    .A                (    A                ),
-    .M1               (    M1               ),
-    .RFSH             (    RFSH             ),
-    .RESET            (    RESET            ),
-    .Z80_CLK          (    Z80_CLK          ),
-    .INT              (    INT              ),
-    .BUSACK           (    BUSACK           ),
-    .OUTPUT_ENABLE    (    OUTPUT_ENABLE    ),
-    .MREQ             (    MREQ             ),
-    .HALT             (    HALT             ),
-    .WR               (    WR               ),
-    .BUSREQ           (    BUSREQ           ),
-    .RD               (    RD               ),
-    .WAIT             (    WAIT             ),
-    .IORQ             (    IORQ             ),
-    .NMI              (    NMI              ),
-    .D                (    D                ),
     .sd_data          (    sd_data          ),
     .sd_addr          (    sd_addr          ),
     .sd_dqm           (    sd_dqm           ),
@@ -71,16 +37,30 @@ vga_mem uut (
     .sd_cke           (    sd_cke           )
 );
 
-parameter PERIOD = 10; //adjust for your timescale
+parameter PERIOD = 40;
+
+/*
+25MHZ period = 40ns
+
+-7 memory should run at a frequency of 143Mhz
+== period = 7ns
+
+Actual memory speed == 64.062Mhz
+== period = 15.6098779 ns
+
+*/
 
 initial begin
     $dumpfile("tb_output.vcd");
     $dumpvars(2, vga_mem_tb);
     clk25 = 1'b0;
-    #(PERIOD/2);
-    forever
-        #(PERIOD/2) clk25 = ~clk25;
+    // #(PERIOD/2);
+
+    // always #(PERIOD/2) clock_out=~clock_out;
+    #5000 $finish;
 end
+
+always #(PERIOD/2) clk25=~clk25;
 
 // initial begin
 //     WR = 1;
