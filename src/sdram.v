@@ -26,40 +26,39 @@
 //
 //
 
-module sdram
-  (
-    input      [15:0] sd_data_in, // 16 bit bidirectional data bus
+module sdram (
+    input      [15:0] sd_data_in,  // 16 bit bidirectional data bus
     output     [15:0] sd_data_out,
     output            sd_data_dir,
-    output reg [10:0] sd_addr,    // 11 bit multiplexed address bus
-    output reg [1:0]  sd_dqm,     // two byte masks
-    output reg [0:0]  sd_ba,      // two banks
-    output 		  sd_cs,      // a single chip select
-    output 		  sd_we,      // write enable
-    output 		  sd_ras,     // row address select
-    output 		  sd_cas,     // columns address select
+    output reg [10:0] sd_addr,  // 11 bit multiplexed address bus
+    output reg [ 1:0] sd_dqm,  // two byte masks
+    output reg [ 0:0] sd_ba,  // two banks
+    output            sd_cs,  // a single chip select
+    output            sd_we,  // write enable
+    output            sd_ras,  // row address select
+    output            sd_cas,  // columns address select
 
     // cpu/chipset interface
-    input 		  init,	      // init signal after FPGA config to initialize RAM
-    input 		  clk,	      // sdram is accessed at 64MHz
-    input             sync,
+    input init,  // init signal after FPGA config to initialize RAM
+    input clk,  // sdram is accessed at 64MHz
+    input sync,
 
-    input      [15:0] din,	      // data input from chipset/cpu
-    output reg [15:0] dout,	      // data output to chipset/cpu
-    input      [19:0] addr,       // 20 bit word address
-    input       [1:0] ds,         // upper/lower data strobe
-    input 		  oe,         // cpu/chipset requests read
-    input 		  we          // cpu/chipset requests write
-  );
+    input      [15:0] din,  // data input from chipset/cpu
+    output reg [15:0] dout,  // data output to chipset/cpu
+    input      [19:0] addr,  // 20 bit word address
+    input      [ 1:0] ds,  // upper/lower data strobe
+    input             oe,  // cpu/chipset requests read
+    input             we  // cpu/chipset requests write
+);
 
-  localparam RASCAS_DELAY   = 3'd2;   // tRCD=20ns -> 3 cycles@128MHz
-  localparam BURST_LENGTH   = 3'b000; // 000=1, 001=2, 010=4, 011=8
-  localparam ACCESS_TYPE    = 1'b0;   // 0=sequential, 1=interleaved
-  localparam CAS_LATENCY    = 3'd2;   // 2/3 allowed
-  localparam OP_MODE        = 2'b00;  // only 00 (standard operation) allowed
-  localparam NO_WRITE_BURST = 1'b1;   // 0= write burst enabled, 1=only single access write
+  localparam RASCAS_DELAY = 3'd2;  // tRCD=20ns -> 3 cycles@128MHz
+  localparam BURST_LENGTH = 3'b000;  // 000=1, 001=2, 010=4, 011=8
+  localparam ACCESS_TYPE = 1'b0;  // 0=sequential, 1=interleaved
+  localparam CAS_LATENCY = 3'd2;  // 2/3 allowed
+  localparam OP_MODE = 2'b00;  // only 00 (standard operation) allowed
+  localparam NO_WRITE_BURST = 1'b1;  // 0= write burst enabled, 1=only single access write
 
-  localparam MODE = { 1'b0, NO_WRITE_BURST, OP_MODE, CAS_LATENCY, ACCESS_TYPE, BURST_LENGTH};
+  localparam MODE = {1'b0, NO_WRITE_BURST, OP_MODE, CAS_LATENCY, ACCESS_TYPE, BURST_LENGTH};
 
 
   // ---------------------------------------------------------------------
@@ -69,11 +68,11 @@ module sdram
   // The state machine runs at 64Mhz synchronous to the 8 Mhz chipset clock.
   // It wraps from T15 to T0 on the rising edge of clk_8
 
-  localparam STATE_FIRST     = 3'd0;   // first state in cycle
-  localparam STATE_CMD_START = 3'd1;   // state in which a new command can be started
-  localparam STATE_CMD_CONT  = STATE_CMD_START + RASCAS_DELAY; // command can be continued
-  localparam STATE_READ      = STATE_CMD_CONT + CAS_LATENCY + 4'd1;
-  localparam STATE_HIGHZ     = STATE_READ - 4'd1; // disable output to prevent contention
+  localparam STATE_FIRST = 3'd0;  // first state in cycle
+  localparam STATE_CMD_START = 3'd1;  // state in which a new command can be started
+  localparam STATE_CMD_CONT = STATE_CMD_START + RASCAS_DELAY;  // command can be continued
+  localparam STATE_READ = STATE_CMD_CONT + CAS_LATENCY + 4'd1;
+  localparam STATE_HIGHZ = STATE_READ - 4'd1;  // disable output to prevent contention
 
 
   // ---------------------------------------------------------------------
@@ -83,15 +82,11 @@ module sdram
   // wait 1ms (32 8Mhz cycles) after FPGA config is done before going
   // into normal operation. Initialize the ram in the last 16 reset cycles (cycles 15-0)
   reg [4:0] reset;
-  always @(posedge clk)
-  begin
-    if(init)
-    begin
+  always @(posedge clk) begin
+    if (init) begin
       $display("set reset");
       reset <= 5'h1f;
-    end
-    else if((stage == STATE_FIRST) && (reset != 0))
-      reset <= reset - 5'd1;
+    end else if ((stage == STATE_FIRST) && (reset != 0)) reset <= reset - 5'd1;
   end
 
   // ---------------------------------------------------------------------
@@ -99,17 +94,17 @@ module sdram
   // ---------------------------------------------------------------------
 
   // all possible commands
-  localparam CMD_INHIBIT         = 4'b1111;
-  localparam CMD_NOP             = 4'b0111;
-  localparam CMD_ACTIVE          = 4'b0011;
-  localparam CMD_READ            = 4'b0101;
-  localparam CMD_WRITE           = 4'b0100;
+  localparam CMD_INHIBIT = 4'b1111;
+  localparam CMD_NOP = 4'b0111;
+  localparam CMD_ACTIVE = 4'b0011;
+  localparam CMD_READ = 4'b0101;
+  localparam CMD_WRITE = 4'b0100;
   localparam CMD_BURST_TERMINATE = 4'b0110;
-  localparam CMD_PRECHARGE       = 4'b0010;
-  localparam CMD_AUTO_REFRESH    = 4'b0001;
-  localparam CMD_LOAD_MODE       = 4'b0000;
+  localparam CMD_PRECHARGE = 4'b0010;
+  localparam CMD_AUTO_REFRESH = 4'b0001;
+  localparam CMD_LOAD_MODE = 4'b0000;
 
-  reg [3:0] sd_cmd;   // current command sent to sd ram
+  reg [3:0] sd_cmd;  // current command sent to sd ram
 
   // drive control signals according to current command
   assign sd_cs  = sd_cmd[3];
@@ -117,59 +112,48 @@ module sdram
   assign sd_cas = sd_cmd[1];
   assign sd_we  = sd_cmd[0];
 
-  reg  [1:0] mode;
+  reg [ 1:0] mode;
   reg [15:0] din_r;
-  reg  [2:0] stage = 3'b0;
+  reg [ 2:0] stage = 3'b0;
 
   assign sd_data_out = din_r;
   assign sd_data_dir = mode[1];
 
   reg [10:0] addr_r;
-  reg  [1:0] ds_r;
+  reg [ 1:0] ds_r;
   reg        old_sync;
 
-  always @(posedge clk)
-  begin
-    if(|stage)
-      stage <= stage + 1'd1;
+  always @(posedge clk) begin
+    if (|stage) stage <= stage + 1'd1;
 
     old_sync <= sync;
-    if(~old_sync & sync)
-      stage <= 1;
+    if (~old_sync & sync) stage <= 1;
 
     sd_cmd <= CMD_INHIBIT;  // default: idle
 
-    if(reset != 0)
-    begin
+    if (reset != 0) begin
       $display("reset");
       // initialization takes place at the end of the reset phase
-      if(stage == STATE_CMD_START)
-      begin
+      if (stage == STATE_CMD_START) begin
         $display("start");
-        if(reset == 13)
-        begin
-          sd_cmd <= CMD_PRECHARGE;
-          sd_addr[10] <= 1'b1;      // precharge all banks
+        if (reset == 13) begin
+          sd_cmd      <= CMD_PRECHARGE;
+          sd_addr[10] <= 1'b1;  // precharge all banks
         end
 
-        if(reset == 2)
-        begin
-          sd_cmd <= CMD_LOAD_MODE;
+        if (reset == 2) begin
+          sd_cmd  <= CMD_LOAD_MODE;
           sd_addr <= MODE;
         end
 
       end
-      mode <= 0;
+      mode   <= 0;
       sd_dqm <= 2'b11;
-    end
-    else
-    begin
+    end else begin
 
       // normal operation
-      if(stage == STATE_CMD_START)
-      begin
-        if(we || oe)
-        begin
+      if (stage == STATE_CMD_START) begin
+        if (we || oe) begin
 
           mode <= {we, oe};
 
@@ -184,35 +168,28 @@ module sdram
 
           addr_r  <= { 3'b100, addr[7:0] };  // auto precharge
 
-        end
-        else
-        begin
+        end else begin
           sd_cmd <= CMD_AUTO_REFRESH;
-          mode <= 0;
+          mode   <= 0;
         end
       end
 
       // CAS phase
-      if(stage == STATE_CMD_CONT && mode)
-      begin
+      if (stage == STATE_CMD_CONT && mode) begin
         sd_cmd  <= mode[1] ? CMD_WRITE : CMD_READ;
         sd_addr <= addr_r;
 
-        if(mode[1])
-          sd_dqm <= ~ds_r;
-        else
-          sd_dqm <= 2'b00;
+        if (mode[1]) sd_dqm <= ~ds_r;
+        else sd_dqm <= 2'b00;
 
       end
 
-      if(stage == STATE_HIGHZ)
-      begin
-        sd_dqm <= 2'b11; // disable chip output
-        mode[1] <= 0;    // disable data output
+      if (stage == STATE_HIGHZ) begin
+        sd_dqm  <= 2'b11;  // disable chip output
+        mode[1] <= 0;  // disable data output
       end
 
-      if(stage == STATE_READ && mode)
-      begin
+      if (stage == STATE_READ && mode) begin
         dout <= sd_data_in;
       end
     end
