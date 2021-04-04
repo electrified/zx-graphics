@@ -1,0 +1,5 @@
+10 LET A = &h4000
+20 WHILE A < &h5aff
+30 POKE A, 1
+35 A = A + 1
+40 WEND

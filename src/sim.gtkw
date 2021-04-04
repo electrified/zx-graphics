@@ -1,0 +1,130 @@
+[*]
+[*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
+[*] Sun Apr  4 18:34:48 2021
+[*]
+[dumpfile] "/home/ed/dev/zx-graphics/src/tb_output.vcd"
+[dumpfile_mtime] "Sun Apr  4 18:22:15 2021"
+[dumpfile_size] 21972
+[savefile] "/home/ed/dev/zx-graphics/src/sim.gtkw"
+[timestart] 0
+[size] 1920 1016
+[pos] -51 -51
+*0.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] vga_mem_tb.
+[sst_width] 223
+[signals_width] 238
+[sst_expanded] 1
+[sst_vpaned_height] 286
+@22
+vga_mem_tb.BLUE[3:0]
+vga_mem_tb.GREEN[3:0]
+@28
+vga_mem_tb.HS
+@22
+vga_mem_tb.RED[3:0]
+@28
+vga_mem_tb.VS
+vga_mem_tb.clk25
+@22
+vga_mem_tb.sd_addr[10:0]
+@28
+vga_mem_tb.sd_ba
+vga_mem_tb.sd_cas
+vga_mem_tb.sd_cke
+vga_mem_tb.sd_cs
+@22
+vga_mem_tb.sd_data[15:0]
+@28
+vga_mem_tb.sd_dqm[1:0]
+vga_mem_tb.sd_ras
+vga_mem_tb.sd_we
+@22
+vga_mem_tb.uut.BLUE[3:0]
+vga_mem_tb.uut.GREEN[3:0]
+@28
+vga_mem_tb.uut.HS
+@22
+vga_mem_tb.uut.RED[3:0]
+@28
+vga_mem_tb.uut.VS
+@22
+vga_mem_tb.uut.address[15:0]
+@28
+vga_mem_tb.uut.btn_dly
+vga_mem_tb.uut.button
+vga_mem_tb.uut.clk25
+vga_mem_tb.uut.clk32
+vga_mem_tb.uut.clk64
+vga_mem_tb.uut.clk_vga
+vga_mem_tb.uut.clk_vga_en
+@22
+vga_mem_tb.uut.clkdiv[5:0]
+@28
+vga_mem_tb.uut.cpu_clken
+@22
+vga_mem_tb.uut.cpu_dout[7:0]
+@28
+vga_mem_tb.uut.display_on
+vga_mem_tb.uut.hard_reset_n
+vga_mem_tb.uut.leds[2:0]
+@22
+vga_mem_tb.uut.load_addr[15:0]
+@28
+vga_mem_tb.uut.load_done
+vga_mem_tb.uut.load_done_pre
+vga_mem_tb.uut.load_wren
+@22
+vga_mem_tb.uut.load_write_data[15:0]
+@28
+vga_mem_tb.uut.locked
+@22
+vga_mem_tb.uut.pwr_up_reset_counter[15:0]
+@28
+vga_mem_tb.uut.pwr_up_reset_n
+vga_mem_tb.uut.reload
+vga_mem_tb.uut.reset
+@22
+vga_mem_tb.uut.rst_cnt[3:0]
+@28
+vga_mem_tb.uut.rst_n
+@22
+vga_mem_tb.uut.scaled_x[9:0]
+vga_mem_tb.uut.scaled_y[9:0]
+vga_mem_tb.uut.sd_addr[10:0]
+@28
+vga_mem_tb.uut.sd_ba
+vga_mem_tb.uut.sd_cas
+vga_mem_tb.uut.sd_cke
+vga_mem_tb.uut.sd_clk
+vga_mem_tb.uut.sd_cs
+@22
+vga_mem_tb.uut.sd_data[15:0]
+@28
+vga_mem_tb.uut.sd_data_dir
+@22
+vga_mem_tb.uut.sd_data_in[15:0]
+vga_mem_tb.uut.sd_data_out[15:0]
+@28
+vga_mem_tb.uut.sd_dqm[1:0]
+vga_mem_tb.uut.sd_ras
+vga_mem_tb.uut.sd_we
+vga_mem_tb.uut.sdram_access
+@22
+vga_mem_tb.uut.sdram_address[15:0]
+@28
+vga_mem_tb.uut.sdram_mask[1:0]
+@22
+vga_mem_tb.uut.sdram_read_data[15:0]
+@28
+vga_mem_tb.uut.sdram_wren
+@22
+vga_mem_tb.uut.sdram_write_data[15:0]
+@28
+vga_mem_tb.uut.sdram_written[1:0]
+vga_mem_tb.uut.sync
+@22
+vga_mem_tb.uut.wait_ctr[7:0]
+vga_mem_tb.uut.x[9:0]
+vga_mem_tb.uut.y[9:0]
+[pattern_trace] 1
+[pattern_trace] 0

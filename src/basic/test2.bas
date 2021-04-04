@@ -1,0 +1,17 @@
+10 PRINT "setting colour attributes"
+20 LET A = &H1800
+30 WHILE A <= &H1B00
+35 print a
+40 OUT &H40, A AND &HFF
+50 OUT &H41, A / 256
+60 OUT &H42, &H13
+65 a = a +1
+70 WEND
+80 PRINT "setting data"
+90 LET A = &H0
+100 WHILE A <= &H1800
+110 OUT &H40, A AND &HFF
+120 OUT &H41, A / 256
+130 OUT &H42, &H44
+140 A = A + 1
+150 WEND
