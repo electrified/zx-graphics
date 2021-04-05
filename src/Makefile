@@ -14,3 +14,6 @@ clean:
 
 sim:
 	iverilog vga_mem_tb.v vga_mem.v hvsync_generator.v pll.v sdram.v `yosys-config --datdir/ice40/cells_sim.v`
+
+lint:
+	verible-verilog-lint vga_mem_tb.v vga_mem.v hvsync_generator.v pll.v sdram.v 

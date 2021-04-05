@@ -36,4 +36,9 @@ output enable is active low and must be done to get anything out - if high bus i
 direction low == from rc2014 to fpga
 use regulator power if all wires from fpga not connected
 
+https://forum.mystorm.uk/t/blackice-mx-sdram-access/664
+https://forum.mystorm.uk/t/sram-emulator-for-sdram/670
 https://1bitsquared.de/products/pmod-digital-video-interface
+
+
+Formatted with verible-verilog-format
