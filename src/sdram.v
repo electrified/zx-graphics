@@ -87,7 +87,7 @@ module sdram
   begin
     if(init)
     begin
-      $display("set reset");
+      // $display("set reset");
       reset <= 5'h1f;
     end
     else if((stage == STATE_FIRST) && (reset != 0))
@@ -141,11 +141,11 @@ module sdram
 
     if(reset != 0)
     begin
-      $display("reset");
+      // $display("reset");
       // initialization takes place at the end of the reset phase
       if(stage == STATE_CMD_START)
       begin
-        $display("start");
+        // $display("start");
         if(reset == 13)
         begin
           sd_cmd <= CMD_PRECHARGE;

@@ -21,23 +21,16 @@ module vga_mem(
     input button
   );
 
- reg [3:0] rst_cnt = 0;
- wire rst_n = !rst_cnt[3];
+  wire clk_vga = clk32;
+  reg  clk_vga_en = 0;
 
- always @(posedge clk25)
- if( rst_n )
-    rst_cnt <= rst_cnt + 1;
+  always @(posedge clk_vga)
+    clk_vga_en <= !clk_vga_en;
 
-   wire clk_vga = clk32;
-   reg  clk_vga_en = 0;
+  reg [15:0]  address;
+  reg [7:0]   cpu_dout;
 
-   always @(posedge clk_vga)
-     clk_vga_en <= !clk_vga_en;
-
-    reg [15:0]  address;
-    reg [7:0]   cpu_dout;
-
-   reg         hard_reset_n;
+  reg         hard_reset_n;
 
   wire [9:0] x, y;
 
@@ -48,7 +41,7 @@ module vga_mem(
 
   hvsync_generator hvsync_gen(
     .clk(clk25),
-    .reset(rst_n),
+    .reset(!hard_reset_n),
     .hsync(HS),
     .vsync(VS),
     .display_on(display_on),
@@ -61,16 +54,13 @@ module vga_mem(
   */
   always @(posedge clk25)
   begin
-    scaled_x <= (x >> 1);
-    scaled_y <= (y >> 1);
-
     if(x < 512 && y < 384)
     begin
-      address <= {scaled_y[7:0], scaled_x[7:0]};
+      address <= {x[9:2], y[9:2]};
 
-      RED <= 4'b1111; ///sdram_read_data[3:0];
-      GREEN <= 4'b1111; //sdram_read_data[7:4];
-      BLUE <= 4'b1111; //sdram_read_data[11:8];
+      RED <= sdram_read_data[3:0];
+      GREEN <= sdram_read_data[7:4];
+      BLUE <= sdram_read_data[11:8];
     end
     else
     begin
@@ -80,18 +70,7 @@ module vga_mem(
     end
   end
 
-//   /*
-//       Initialising RAM
-//   */
-//   always @(posedge clk25)
-//   begin
-//     if (rst_n)
-//     begin
-//       sdram_access <= 1;
-//       write_to_sdram <= 1;
-     assign load_write_data = 'b1010101010101010;
-//     end
-//   end
+  // assign load_write_data = 4'h7fff;
 
   // Pll for SDRAM clock
   wire clk64, locked;
@@ -124,7 +103,7 @@ module vga_mem(
    // Reset generation
    // ===============================================================
 
-   reg [15:0] pwr_up_reset_counter = 0; // hold reset low for ~1ms
+   reg [10:0] pwr_up_reset_counter = 0; // hold reset low for ~1ms
    wire       pwr_up_reset_n = &pwr_up_reset_counter;
 
    always @(posedge clk64)
@@ -140,15 +119,13 @@ module vga_mem(
 
    wire reset = !hard_reset_n | !load_done;
 
-   reg reload;
-   reg btn_dly;
+   reg reload = 0;
+   reg btn_dly = 0;
 
    always @ (posedge clk64) begin
      btn_dly <= button;
      reload <= button && !btn_dly;
    end
-
-
 
   // Use SB_IO for tristate sd_data
   wire [15:0] sd_data_in;
@@ -173,9 +150,9 @@ module vga_mem(
    assign sd_cke = 1;
    assign sd_clk = clk64;
 
-   wire [15:0] sdram_address = load_done ? address[17:1] : (16'h6000 + load_addr[15:0]);
-   wire        sdram_wren = load_done ? (sdram_access && 1'b0 /*!atom_RAMWE_b*/) : load_wren;
-   wire [15:0] sdram_write_data = load_done ? {cpu_dout, cpu_dout} : load_write_data;
+   wire [15:0] sdram_address = load_done ? address : load_addr;
+   wire        sdram_wren = !load_done; // ? 0 : load_wren;
+   wire [15:0] sdram_write_data = load_done ? 0 : load_write_data;
    wire [15:0] sdram_read_data;
    wire  [1:0] sdram_mask = load_done ? (2'b01 << address[0]) : 2'b11;
 
@@ -196,7 +173,7 @@ module vga_mem(
           .sync(sync),
           .ds(sdram_mask),
           .we(sdram_wren),
-          .oe(load_done && sdram_access/* && !atom_RAMOE_b*/),
+          .oe(load_done),
           .addr({4'b0, sdram_address}),
           .din(sdram_write_data),
           .dout(sdram_read_data)
@@ -208,16 +185,18 @@ module vga_mem(
    reg  [1:0]  sdram_written = 0;
    wire [15:0] load_write_data;
 
-//    reg         flashmem_valid;
-//    wire        flashmem_ready;
+   reg         flashmem_valid;
+  //  wire        flashmem_ready;
    wire        load_wren =  sdram_written > 1;
 //    wire [23:0] flashmem_addr = 24'h70000 | {load_addr, 1'b0};
    reg         load_done_pre;
-   reg [7:0]   wait_ctr;
+   reg [7:0]   wait_ctr = 0;
+   reg [2:0]   ed_ctr = 0;
 
-   assign leds[0] = !load_done;
-   assign leds[1] = !hard_reset_n;
-   assign leds[2] = !reload;
+// LEDs on when = 0
+   assign leds[0] = load_done; //GREEN
+   assign leds[1] = hard_reset_n; //YELLOW
+   assign leds[2] = reload; //RED
 
    // Flash memory load interface
    always @(posedge clk64)
@@ -228,33 +207,35 @@ module vga_mem(
        load_done <= 1'b0;
        load_addr <= 17'h00000;
        wait_ctr <= 8'h00;
-    //    flashmem_valid <= 1;
+       flashmem_valid <= 1;
      end else begin
      if (reload) begin
        load_done_pre <= 1'b0;
        load_done <= 1'b0;
        load_addr <= 17'h0000;
        wait_ctr <= 8'h00;
-    //    flashmem_valid <= 1;
+       flashmem_valid <= 1;
      end else if (!load_done) begin
-       if (sdram_written > 0 && sdram_written < 3) begin
+       if (sdram_written >= 0 && sdram_written < 3) begin
          if (sync) sdram_written <= sdram_written + 1;
          if (sdram_written == 2 && sync) begin
-           if (load_addr == 17'h1fff) begin
+           if (load_addr == 15'hffff) begin
              load_done_pre <= 1'b1;
            end else begin
              load_addr <= load_addr + 1'b1;
-            //  flashmem_valid <= 1;
+             load_write_data <= load_addr;
+             flashmem_valid <= 1;
              sdram_written <= 0;
            end
          end
        end
        if(!load_done_pre) begin
         //  if (flashmem_ready == 1'b1) begin
-        //    flashmem_valid <= 0;
-        //    sdram_written <= 1;
+         if (sdram_written == 1'b0) begin
+           flashmem_valid <= 0;
+           sdram_written <= 1;
            //if (load_addr == 16'h1ffe) diag <= load_write_data;
-        //  end
+         end
        end else begin
          if (wait_ctr < 8'hFF)
            wait_ctr <= wait_ctr + 1;

@@ -18,7 +18,8 @@ wire              sd_we            ;
 wire              sd_ras           ;
 wire              sd_cas           ;
 wire              sd_cke           ;
-
+reg              button;
+wire       [2:0] leds;
 vga_mem uut (
     .clk25            (    clk25            ),
     .HS               (    HS               ),
@@ -34,7 +35,9 @@ vga_mem uut (
     .sd_we            (    sd_we            ),
     .sd_ras           (    sd_ras           ),
     .sd_cas           (    sd_cas           ),
-    .sd_cke           (    sd_cke           )
+    .sd_cke           (    sd_cke           ),
+    .leds             (     leds            ),
+    .button           (     button          )
 );
 
 parameter PERIOD = 40;
@@ -53,11 +56,12 @@ Actual memory speed == 64.062Mhz
 initial begin
     $dumpfile("tb_output.vcd");
     $dumpvars(2, vga_mem_tb);
+    button = 1'b1;
     clk25 = 1'b0;
     // #(PERIOD/2);
 
     // always #(PERIOD/2) clock_out=~clock_out;
-    #5000 $finish;
+    #50000000 $finish;
 end
 
 always #(PERIOD/2) clk25=~clk25;
