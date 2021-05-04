@@ -42,10 +42,8 @@ set_io D[5] 104 #P53 SDCLK
 set_io D[6] 105 #P54 SD0
 set_io D[7] 106 #P55 SD1
 
-
 ###IOSet List 11
 set_io CLK 60
-
 
 # VGA Output - Matches Digilent PmodVGA plugged into PMOD7/8/9/10
 
@@ -56,7 +54,6 @@ set_io BLUE[2]   134
 set_io BLUE[3]   135   
 set_io HS        1   
 set_io VS        2   
-
 
 # top row
 set_io RED[0]    141
@@ -69,11 +66,45 @@ set_io GREEN[1]  144
 set_io GREEN[2]   3
 set_io GREEN[3]   4
 
+# SRAM
+set_io sd_addr[0] 117
+set_io sd_addr[1] 119
+set_io sd_addr[2] 121
+set_io sd_addr[3] 124
+set_io sd_addr[4] 130
+set_io sd_addr[5] 125
+set_io sd_addr[6] 122
+set_io sd_addr[7] 120
+set_io sd_addr[8] 118
+set_io sd_addr[9] 116
+set_io sd_addr[10] 115
 
+set_io sd_ba 114
 
+set_io sd_data[0] 78
+set_io sd_data[1] 79
+set_io sd_data[2] 80
+set_io sd_data[3] 81
+set_io sd_data[4] 82
+set_io sd_data[5] 83
+set_io sd_data[6] 84
+set_io sd_data[7] 85
+set_io sd_data[8] 87
+set_io sd_data[9] 88
+set_io sd_data[10] 90
+set_io sd_data[11] 91
+set_io sd_data[12] 95
+set_io sd_data[13] 96
+set_io sd_data[14] 97
+set_io sd_data[15] 98
 
+set_io sd_dqm[0] 93
+set_io sd_dqm[1] 94
 
+set_io sd_we 107
+set_io sd_cas 110
+set_io sd_ras 112
+set_io sd_cs 113
+set_io sd_cke 128
 
-
-
-
+set_io sd_clk 129

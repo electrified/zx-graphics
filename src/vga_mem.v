@@ -107,7 +107,7 @@ reg [15:0] A_2;
 reg [15:0] D_0;
 reg [15:0] D_1;
 
-reg [31:0] led_countdown = 0;
+// reg [31:0] led_countdown = 0;
 
 always @(posedge CLK)
 begin
@@ -130,13 +130,13 @@ begin
     D_0 <= D;
     D_1 <= D_0;
 
-    if(mrq_2 == 0 && wr_2 == 1 && wr_1 == 0)
+    if(WR == 1)
     begin
 
-        if (A_2 >= 'h4000 && A_2 <= 'h5AFF)
+        if (A >= 'h4000 && A <= 'h5AFF)
         begin
             // LED1 <= ~LED1;
-            mem[A_2 - 'h4000] <= D_1;
+            mem[A - 'h4000] <= D;
         end
     end
 
