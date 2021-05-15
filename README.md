@@ -25,4 +25,12 @@ use regulator power if all wires from fpga not connected
 50 A = A + 1
 60 WEND
 
+10 LET A = &h4000
+20 WHILE A < &h40D0
+30 PRINT "Poking ", A
+40 POKE A, 255
+50 A = A + 1
+60 WEND
+
+
 https://1bitsquared.de/products/pmod-digital-video-interface

@@ -18,11 +18,7 @@ module vga_mem(
     input INT,
     input WR,
     output OUTPUT_ENABLE,
-    // output LED1,
-    // output LED2
     );
-// assign LED1 = 1;
-// assign LED2 = 0;
 assign OUTPUT_ENABLE = 0;
 wire [9:0] x, y;
 
@@ -77,19 +73,76 @@ always @(posedge CLK)
         scaled_y <= (y >> 1);
         colour_index <= 'h1800 + {scaled_y[7:3], scaled_x[7:3]};
 
-        if(x < 512 && y < 384)
+        if(x< 20 && y < 20)
+        begin
+            RED <= status_countdown[0] ? 'b1111 : 0;
+            GREEN <= status_countdown[8] ? 'b1111 : 0;
+            BLUE <= status_countdown[17] ? 'b1111 : 0;
+        end
+
+        if(x> 20 && x < 40 && y < 20)
+        begin
+            RED <= status_countdown[1] ? 'b1111 : 0;
+            GREEN <= status_countdown[9] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+        if(x> 40 && x < 60 && y < 20)
+        begin
+            RED <= status_countdown[2] ? 'b1111 : 0;
+            GREEN <= status_countdown[10] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+        if(x> 60 && x < 80 && y < 20)
+        begin
+            RED <= status_countdown[3] ? 'b1111 : 0;
+            GREEN <= status_countdown[11] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+        if(x> 80 && x < 100 && y < 20)
+        begin
+            RED <= status_countdown[4] ? 'b1111 : 0;
+            GREEN <= status_countdown[12] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+        if(x> 100 && x < 120 && y < 20)
+        begin
+            RED <= status_countdown[5] ? 'b1111 : 0;
+            GREEN <= status_countdown[13] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+        if(x> 120 && x < 140 && y < 20)
+        begin
+            RED <= status_countdown[6] ? 'b1111 : 0;
+            GREEN <= status_countdown[14] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+        if(x> 140 && x < 160 && y < 20)
+        begin
+            RED <= status_countdown[7] ? 'b1111 : 0;
+            GREEN <= status_countdown[15] ? 'b1111 : 0;
+            BLUE <= 0;
+        end
+
+
+        if(y > 20 && x < 512 && y < 384)
         begin
             color <= mem[{scaled_y[7:6], scaled_y[2:0], scaled_y[5:3], scaled_x[7:3]}][7 - scaled_x[2:0]];
             RED <= (color? mem[colour_index][1]: mem[colour_index][4]) << 3;
             GREEN <= (color? mem[colour_index][2]: mem[colour_index][5]) << 3;
             BLUE <= (color? mem[colour_index][0]: mem[colour_index][3]) << 3;
         end
-        else
-        begin
-            RED <= 0;
-            GREEN <= 0;
-            BLUE <= 0;
-        end
+        // else
+        // begin
+        //     RED <= 0;
+        //     GREEN <= 0;
+        //     BLUE <= 0;
+        // end
     end
 
 reg wr_0;
@@ -107,7 +160,9 @@ reg [15:0] A_2;
 reg [15:0] D_0;
 reg [15:0] D_1;
 
-// reg [31:0] led_countdown = 0;
+reg [16:0] status_countdown [17:0];
+
+integer i;
 
 always @(posedge CLK)
 begin
@@ -130,15 +185,24 @@ begin
     D_0 <= D;
     D_1 <= D_0;
 
-    if(WR == 1)
+    // if(mrq_2 == 0 && wr_2 == 1 && wr_1 == 0)
+    // begin
+    status_countdown[17] <= {32{1'b1}};
+        // if (A >= 'h4000 && A <= 'h5AFF)
+        // begin
+    mem[A - 'h4000] <= D;
+
+    for (i = 0; i < 18; i=i+1)
     begin
-
-        if (A >= 'h4000 && A <= 'h5AFF)
+        if(A[i] == 1)
         begin
-            // LED1 <= ~LED1;
-            mem[A - 'h4000] <= D;
+            status_countdown[i] <= {32{1'b1}};
         end
+        else
+        if (status_countdown[i] > 0)
+        begin
+            status_countdown[i] <= status_countdown[i] - 1;
+        end    
     end
-
 end
 endmodule
